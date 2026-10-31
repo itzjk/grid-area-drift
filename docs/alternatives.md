@@ -10,7 +10,7 @@ Checked on 2026-10-31 before implementing the comparator. This is a scoped compa
 
 The [Firefox Grid Inspector documentation](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_grid_layouts/index.html), read on the check date, describes area labels, line numbers and tooltips over a rendered grid. Those controls inspect a page; the documented interface does not describe a two-file semantic report. Firefox itself was not run.
 
-The reproducible experiment also requests the Chromium DevTools Grid overlay for each example with line and area labels enabled. Local launch of Chrome for Testing 156.0.8078.4 failed with `bootstrap_check_in ... Permission denied (1100)`. The Computer Use fallback had no available browser connection and refused native Chrome access. Overlay output and the browser oracle remain unverified locally; the scripts fail rather than skipping them. CI is configured to execute both. No browser layout result is claimed from the documentation review.
+The reproducible experiment also requests the Chromium DevTools Grid overlay for each example with line and area labels enabled. The default Chromium launch failed with `bootstrap_check_in ... Permission denied (1100)`. A separate run with `--single-process --no-zygote` completed on Chromium 156.0.8078.4 and reported `overlayEnabled: true` for both examples. The independent browser oracle also passed all 23 checks, including rendered element rectangles. This verifies the synthetic examples under that launch configuration; default browser startup remains blocked locally. CI runs both scripts with the default browser configuration. Firefox itself was not run.
 
 ## Short reference script
 

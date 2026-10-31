@@ -35,7 +35,12 @@ This invokes Stylelint's shape validation, prints a deliberately small fixture-o
 Record the terminal demo with [VHS](https://github.com/charmbracelet/vhs), ttyd and FFmpeg installed:
 
 ```sh
+npm i -g .
+cp examples/before.css before.css
+cp examples/after.css after.css
 vhs docs/demo.tape
 ```
 
-The tape runs the CLI on the included examples and writes `docs/demo.gif`. It never publishes the recording. Add the GIF to the README after a successful recording and visual inspection.
+The tape requires the installed `grid-area-drift` command on PATH. It runs the same command as the README against copies of the included examples and writes `docs/demo.gif`, embedded in the README. Exit code 1 means differences were found. Inspect the opening and completed frames before committing a new recording. Remove the two temporary CSS copies after recording.
+
+See [build verification](validation.md) for the clean-clone installation results and test count.

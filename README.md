@@ -5,19 +5,7 @@ See which named CSS Grid regions moved, resized, appeared or disappeared between
 [![CI](https://github.com/itzjk/grid-area-drift/actions/workflows/ci.yml/badge.svg)](https://github.com/itzjk/grid-area-drift/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-```text
-2 changed, 0 added, 0 removed, 2 unchanged
-unchanged foot
-  [3,1,4,4] span 1x3 (3 cells) -> [3,1,4,4] span 1x3 (3 cells)
-unchanged head
-  [1,1,2,4] span 1x3 (3 cells) -> [1,1,2,4] span 1x3 (3 cells)
-changed   main (origin-changed)
-  [2,2,3,4] span 1x2 (2 cells) -> [2,1,3,3] span 1x2 (2 cells)
-changed   nav (origin-changed)
-  [2,1,3,2] span 1x1 (1 cell) -> [2,3,3,4] span 1x1 (1 cell)
-```
-
-[Demo recording tape](docs/demo.tape)
+![Terminal demo showing main and nav moving while head and foot stay unchanged](docs/demo.gif)
 
 ## Quick start
 
@@ -81,7 +69,7 @@ Exit codes: **0** complete and equal; **1** complete with differences; **2** inc
 
 ## Contributing
 
-From a clone, install dependencies with `npm ci` and run `npm test`; browser and mutation checks are described in [development notes](docs/development.md).
+From a clone, install dependencies with `npm ci`, run `npm test`, and install the CLI with `npm i -g .`; browser, mutation and demo checks are described in [development notes](docs/development.md).
 
 ## License
 

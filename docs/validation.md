@@ -1,29 +1,54 @@
 # Build verification
 
-Observed on 2026-10-31 using Node.js 24.16.0. Browser-dependent checks are listed separately from passing checks.
+Checked on 2026-10-31 with Node.js 24.16.0 and npm 11.13.0. Tests ran in a fresh local Git clone, including a space in its path, with no inherited `node_modules`. npm used isolated installation prefixes and caches. No remote publication or push was performed.
 
-| Check | Observed result |
+## README commands
+
+| Command | Observed result |
 | --- | --- |
-| Clean source snapshot, local git clone, `npm ci` | Passed; 118 packages installed, audit reported zero vulnerabilities |
-| `npm test` in that clean clone, including a path with spaces | Passed, 57 tests, zero failures |
-| `npm run test:mutations` | Clean baseline passed; all three mutations killed |
-| Forced baseline failure in a disposable copy | Mutation runner exited 1 before running any mutation |
-| `npm pack`, global tarball install into isolated prefix | Passed; CLI runs without development dependencies |
-| Main installed CLI example | Exit 1; nav and main moved, spans preserved; head and foot unchanged |
-| Nonrectangular example | Exit 2; invalid-template; no change list or repaired area geometry |
-| Input immutability assertions | Passed for all three checked-in CSS examples |
-| README terminal excerpt | Matched current CLI stdout |
-| `vhs validate docs/demo.tape` | Passed |
+| `npm ci` | Exit 0; 118 packages installed; zero audit vulnerabilities |
+| `npm test` | Exit 0; **57 tests, 57 passed, 0 failed, 0 skipped** |
+| `npm i -g .` | Exit 0; installed the CLI from the clean clone into an isolated global prefix |
+| `grid-area-drift before.css after.css --selector .layout` | Exit 1; 2 changed, 0 added, 0 removed, 2 unchanged |
+| `npm i -g github:itzjk/grid-area-drift` | Exit 128; the GitHub shorthand attempted SSH and authentication failed |
 
-An independent reviewer started with only the README, installed the tarball, supplied separate added/removed/moved/resized/combined-change/none/null-column fixtures, and verified exit codes 0 through 3. The reviewer reran the updated 57 tests and all three mutations successfully. The review found the escaped-at-rule classification regression and the missing mutation baseline guard; both were fixed before the passing clean-clone run.
+The usage command ran outside the clone against copies of the included CSS examples, using the installed command on PATH. Its output contained:
 
-## Checks still blocked
+```text
+changed   main (origin-changed)
+  [2,2,3,4] span 1x2 (2 cells) -> [2,1,3,3] span 1x2 (2 cells)
+changed   nav (origin-changed)
+  [2,1,3,2] span 1x1 (1 cell) -> [2,3,3,4] span 1x1 (1 cell)
+```
 
-- The requested GitHub install command was attempted. The SSH route failed authentication; an HTTPS retry returned `Repository not found`. The repository has not been published. Public installation cannot be verified until it exists.
-- Chrome for Testing 156.0.8078.4, Playwright Chromium v1248, downloaded successfully. `npm run test:browser` then failed at launch with macOS `bootstrap_check_in ... Permission denied (1100)`, followed by SIGTRAP. No CSS.supports or rendered rectangle assertions ran. A secondary browser connection was unavailable. CI contains the independent browser checks, but remote CI has not run.
-- `vhs docs/demo.tape` failed with `could not start browser: browser exited unexpectedly before its debugging endpoint was ready`. No GIF was generated. The README uses terminal output until the real recording can be produced and inspected.
-- The primary repository's Git metadata is read-only in the build sandbox. `git add` failed while creating `.git/index.lock`; no primary-repository commits were created. Disposable snapshot commits used the requested public author solely to enable clean-clone verification.
+The JSON report asserted all four names' exact before/after coordinates, including unchanged head and foot. Further installed-command runs returned 0 for equal templates, 2 for `invalid.css`, and 3 for a missing input. `--help` and `--version` returned 0. SHA-256 hashes of all three input files were unchanged after the comparisons.
 
-## Remaining gate
+The GitHub install was attempted, not verified successfully. An HTTPS request to `https://github.com/itzjk/grid-area-drift` and the public repository API returned 404. Public installation needs another check once the repository is available; a local installation does not establish that the GitHub command works.
 
-Run the browser oracle and alternative-tool experiment where Chromium can launch, record and inspect the 10–25 second VHS demo, embed its GIF, create the primary repository's small commits, then verify installation after the authorized publication step. The browser checks are mandatory in CI and do not silently skip on launch failure. Nothing was pushed or published during construction.
+## Negative and browser checks
+
+`npm run test:mutations` passed its clean baseline, then killed each of the three mutations: ignoring the initial column, comparing only spans, and accepting nonrectangular regions.
+
+The default `npm run test:browser` and `npm run check:alternatives` launches failed locally with `bootstrap_check_in ... Permission denied (1100)`. Separate diagnostic runs used a temporary Playwright launch adapter adding `--single-process --no-zygote`; the checked-in assertions were unchanged.
+
+On Chromium **156.0.8078.4**, the browser oracle passed **23 checks**: 15 `CSS.supports` fixture checks and eight rendered area comparisons. Fixed tracks were 80px wide and 40px tall. The browser measured nav moving from `(0,40,80,40)` to `(160,40,80,40)` and main moving from `(80,40,160,40)` to `(0,40,160,40)`, in `(x,y,width,height)` order. Head and foot retained their rectangles. Every rectangle was also compared to the analyzer's logical lines.
+
+The alternative-tool experiment completed under the same diagnostic launch configuration: Stylelint accepted both valid examples, rejected the negative fixture at line 4, column 5, and Chromium enabled the Grid overlay on both versions. See [alternatives](alternatives.md). These passing diagnostics do not establish that the default local browser launch works. CI retains the default browser configuration; remote CI has not been run.
+
+## Terminal recording
+
+[The tape](demo.tape) requires `grid-area-drift` on PATH and invokes the same installed command as the README. The recording uses copies of the included before/after examples. The generated [GIF](demo.gif) is embedded in the first screen of the README and included in the npm package's file list.
+
+The installed VHS 0.12.1 could not launch its default browser in this environment. Recording used a temporary build of VHS (source revision `24fa225`) with Chromium headless shell selected and its browser launch adapted to `--single-process --no-zygote`. The CLI, terminal input and output were not substituted. The opening command and completed result frames were decoded for visual inspection. To record on a host with normal browser access, follow [development](development.md).
+
+FFprobe measured **12.68 seconds**, **317 frames**, **1200 x 880 pixels**, and **125,088 bytes**. SHA-256: `b44e956f0834df0628d7c2eaef1eb8278a36e67ef22cf702efe30eae909a2241`.
+
+## Independent README review
+
+A separate reviewer read only the README's installation, usage and testing instructions before making a fresh snapshot clone. Their `npm ci`, `npm test` and `npm i -g .` runs passed, with 57 tests and zero failures or skips. The installed CLI reproduced the exact main/nav coordinates from a separate consumer directory. They also confirmed the GitHub install failure and HTTPS 404.
+
+The reviewer then ran `npm pack`, installed that tarball into a separate isolated global prefix, and ran the main comparison again. It returned exit 1 with the expected two changed and two unchanged areas. The production installation contained no Playwright or Stylelint development dependencies. Both the tarball and installed package contained a byte-identical copy of the final GIF, and the README embed and installed-command tape were verified.
+
+## Remaining external checks
+
+Public GitHub installation and remote CI remain unverified until the repository is available. The passing browser results above use the stated diagnostic configuration; default local startup still fails. Nothing was published to work around those limits.
