@@ -1,0 +1,36 @@
+{
+  "valid": [
+    { "name": "single", "value": "\"a\"" },
+    { "name": "null-cells", "value": "\"a .\" \". B\"" },
+    { "name": "rectangle", "value": "\"a a .\" \"a a b\"" },
+    { "name": "none", "value": "none" },
+    { "name": "none-case", "value": "NoNe" },
+    { "name": "all-null", "value": "\". .\"" },
+    { "name": "names", "value": "\"_a a-1 constructor __proto__\"" },
+    { "name": "formatting", "value": "' a   a\t b ' /* row */ ' c c d '" },
+    { "name": "adjacent-strings", "value": "\"a b\"\"c d\"" }
+  ],
+  "invalid": [
+    { "name": "unequal", "value": "\"a a\" \"b\"", "code": "unequal-rows" },
+    { "name": "empty", "value": "\"\"", "code": "empty-row" },
+    { "name": "empty-spaces", "value": "\"  \t \"", "code": "empty-row" },
+    { "name": "hole", "value": "\"a a a\" \"a . a\" \"a a a\"", "code": "non-rectangular" },
+    { "name": "disconnected", "value": "\"a . a\"", "code": "non-rectangular" },
+    { "name": "l-shaped", "value": "\"a a\" \"a b\"", "code": "non-rectangular" }
+  ],
+  "unsupported": [
+    { "name": "numeric", "value": "\"1st\"" },
+    { "name": "unicode", "value": "\"área\"" },
+    { "name": "escape", "value": "\"\\61\"" },
+    { "name": "dot-sequence", "value": "\"...\"" },
+    { "name": "attached-dot", "value": "\"a.b\"" },
+    { "name": "leading-hyphen", "value": "\"-area\"" },
+    { "name": "non-css-space", "value": "\"a b\"" },
+    { "name": "variable", "value": "var(--areas)" },
+    { "name": "inherit", "value": "inherit" },
+    { "name": "unset", "value": "unset" },
+    { "name": "initial", "value": "initial" },
+    { "name": "revert", "value": "revert-layer" },
+    { "name": "mixed", "value": "\"a\" none" }
+  ]
+}

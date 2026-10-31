@@ -1,0 +1,6 @@
+.layout {
+  grid-template-areas:
+    "head head head"
+    "nav main main"
+    "main main foot";
+}

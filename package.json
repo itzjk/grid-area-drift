@@ -1,0 +1,22 @@
+{
+  "name": "grid-area-drift",
+  "version": "0.1.0",
+  "description": "Compare named CSS Grid regions between two stylesheets, with logical lines and source locations.",
+  "type": "module",
+  "bin": { "grid-area-drift": "bin/grid-area-drift.js" },
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:browser": "node scripts/browser-check.js",
+    "check:alternatives": "node scripts/alternatives.js",
+    "test:mutations": "node scripts/mutation-check.js"
+  },
+  "files": ["bin", "src", "examples", "README.md", "LICENSE", "docs/*.md", "docs/demo.tape"],
+  "keywords": ["css", "css-grid", "diff", "cli", "static-analysis", "design-systems", "continuous-integration"],
+  "repository": { "type": "git", "url": "https://github.com/itzjk/grid-area-drift" },
+  "bugs": { "url": "https://github.com/itzjk/grid-area-drift/issues" },
+  "homepage": "https://github.com/itzjk/grid-area-drift#readme",
+  "license": "MIT",
+  "dependencies": { "postcss": "^8.5.32", "postcss-value-parser": "^4.2.0" },
+  "devDependencies": { "playwright": "^1.64.1", "stylelint": "^17.16.0" }
+}
